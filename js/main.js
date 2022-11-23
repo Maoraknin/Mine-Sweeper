@@ -5,15 +5,23 @@ const MARK = '🚩'
 const STARTSMILEY = '😃'
 const LOSESMILEY = '🤯'
 const WINSMILEY = '😎'
+const HEART = '❤️'
+const HINT = '❔'
+const USEHINT = '❓'
+
 
 var gGame
-var gLevel = {SIZE: 4, MINES: 2}
 var gBoard
 var gStartTime
 var gInterval
+var gLevel
+var gOpenBombCount
+var gHint
 
 function onInit() {
-    
+    gHint = false
+    gOpenBombCount = 0
+    gLevel = { SIZE: 4, MINES: 2, LIFE: 3, HINT: 3}
     gGame = {
         isOn: true,
         shownCount: 0,
@@ -22,6 +30,7 @@ function onInit() {
     }
     gBoard = buildBoard()
     renderBoard(gBoard, 'tbody')
+    lifeUpdate()
 }
 
 function buildBoard() {
@@ -39,61 +48,96 @@ function buildBoard() {
         }
     }
 
+    // enterMines()
+    // var minesCount = 0
+    // while (minesCount < gLevel.MINES) {
+    //     const rowNum = getRandomInt(0, size)
+    //     const collNum = getRandomInt(0, size)
+    //     if (board[rowNum][collNum].isMine) continue
+    //     if (board[rowNum][collNum].isShown) continue
+    //     console.log('[rowNum][collNum]:', [rowNum], [collNum])
+    //     board[rowNum][collNum].isMine = true
+    //     minesCount++
+    // }
+    return board
+}
+
+function enterMines() {
+    const size = gLevel.SIZE
     var minesCount = 0
     while (minesCount < gLevel.MINES) {
         const rowNum = getRandomInt(0, size)
         const collNum = getRandomInt(0, size)
-        if (board[rowNum][collNum].isMine) continue
+        if (gBoard[rowNum][collNum].isMine) continue
+        if (gBoard[rowNum][collNum].isShown) continue
         console.log('[rowNum][collNum]:', [rowNum], [collNum])
-        board[rowNum][collNum].isMine = true
+        gBoard[rowNum][collNum].isMine = true
         minesCount++
+        console.log(minesCount);
     }
-    return board
 }
 
 function cellClicked(btn, i, j) {
     const cell = gBoard[i][j]
     const elCell = btn
-    if (!gGame.isOn && gGame.shownCount !== 0) return
-    startTimer()
+    if(gHint){
+       hintNeighborsPlace(i, j, gBoard)
+    //    setTimeout(()=> cell.isShown = false,1000)
+       return
+    }
+    if (!gGame.isOn) return
+    if (gGame.isOn && gGame.shownCount === 0) {
+        cell.isShown = true
+        gGame.shownCount++
+        enterMines()
+        renderBoard(gBoard, 'tbody')
+        startTimer()
+    }
     if (cell.isShown) return
     if (cell.isMarked) return
     cell.isShown = true
     if (cell.isMine) {
-        elCell.innerText = MINE
-        const elBtn = document.querySelector('.smiley-btn')
-        elBtn.innerText = LOSESMILEY
-        endGame()
+        if (gLevel.LIFE > 0) {
+            gLevel.LIFE--
+            lifeUpdate()
+            gOpenBombCount++
+            btn.innerText = MINE
+        } else {
+            elCell.innerText = MINE
+            endGame(LOSESMILEY)
+        }
+
     } else {
-        if(cell.minesAroundCount === 0){
+        if (cell.minesAroundCount === 0) {
             checkNeighbors(i, j, gBoard)
             renderBoard(gBoard, 'tbody')
         }
         elCell.innerText = cell.minesAroundCount
         gGame.shownCount++
         if (isVictory()) {
-            const elBtn = document.querySelector('.smiley-btn')
-            elBtn.innerText = WINSMILEY
-            endGame()
+            endGame(WINSMILEY)
         }
     }
 }
 
 function cellLeftClicked(btn, i, j) {
-    if (!gGame.isOn && gGame.shownCount !== 0) return
-    startTimer()
+    if (!gGame.isOn) return
+    if (gGame.isOn && gGame.shownCount === 0) {
+        // enterMines()
+        startTimer()
+    }
     const cell = gBoard[i][j]
     const elCell = btn
-    if (!gGame.isOn) gGame.isOn = true
     if (cell.isShown && !cell.isMarked) return
-    cell.isMarked ? cell.isMarked = false : cell.isMarked = true
+    if (gGame.markedCount < gLevel.MINES) {
+        cell.isMarked ? cell.isMarked = false : cell.isMarked = true
+    } else return
+    console.log(gGame.markedCount);
     if (cell.isMarked) {
         gGame.markedCount++
         elCell.innerText = MARK
         if (isVictory()) {
-            const elBtn = document.querySelector('.smiley-btn')
-            elBtn.innerText = WINSMILEY
-            endGame()
+            endGame(WINSMILEY)
         }
     } else {
         gGame.markedCount--
@@ -101,18 +145,33 @@ function cellLeftClicked(btn, i, j) {
     }
 }
 
+function useHint(elHint){
+        elHint.innerText = USEHINT
+        gHint = true
+}
+
 function changeLevel(level) {
-    if (!gGame.isOn && gGame.shownCount !== 0) return
+    if (!gGame.isOn) return
+    if (gGame.isOn && gGame.shownCount > 0) return
     if (level === 'easy') {
         gLevel.SIZE = 4
         gLevel.MINES = 2
+        gLevel.LIFE = 3
+        gLevel.HINT = 3
     } else if (level === 'medium') {
         gLevel.SIZE = 8
         gLevel.MINES = 14
+        gLevel.LIFE = 3
+        gLevel.HINT = 3
     } else if (level === 'hard') {
         gLevel.SIZE = 12
         gLevel.MINES = 32
+        gLevel.LIFE = 3
+        gLevel.HINT = 3
     }
+    lifeUpdate()
+    // clearInterval(gInterval)
+    // console.log('gInterval:',gInterval)
     resetTime()
     gBoard = buildBoard()
     renderBoard(gBoard, 'tbody')
@@ -120,30 +179,36 @@ function changeLevel(level) {
 
 }
 
+function lifeUpdate() {
+    const elSpan = document.querySelector('p span')
+    elSpan.innerText = HEART.repeat(gLevel.LIFE)
+}
+
 
 
 function isVictory() {
-    return (gGame.shownCount === (gLevel.SIZE ** 2) - gLevel.MINES && gGame.markedCount === gLevel.MINES)
+    return(gGame.shownCount === (gLevel.SIZE ** 2) - gLevel.MINES && gGame.markedCount + gOpenBombCount === gLevel.MINES)
+
 }
 
-function endGame() {
+function endGame(sign) {
+    const elBtn = document.querySelector('.smiley-btn')
+    elBtn.innerText = sign
     gGame.isOn = false
     for (var i = 0; i < gLevel.SIZE; i++) {
         for (var j = 0; j < gLevel.SIZE; j++) {
             const cell = gBoard[i][j]
             if (cell.isMine) cell.isShown = true
         }
-        renderBoard(gBoard, 'tbody')
 
     }
+    renderBoard(gBoard, 'tbody')
     clearInterval(gInterval)
 
 }
 
 function restartBtn() {
-    const elBtn = document.querySelector('.smiley-btn')
-    elBtn.innerText = STARTSMILEY
-    endGame()
+    endGame(STARTSMILEY)
     resetTime()
     onInit()
 }

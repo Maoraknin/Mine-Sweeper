@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <title>Mine Sweeper</title>
 </head>
 
 <body onload="onInit()">
-    
+    <div class="d-flex flex-column justify-content-center w-100 h-100">
+
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h1>Mine Sweeper!</h1>
+        </div>
+    </div>
+    </div>
     <div class="context">
 
         <button onclick="changeLevel('easy')">Easy</button>
         <button onclick="changeLevel('medium')">Medium</button>
         <button onclick="changeLevel('hard')">Hard</button>
         <br>
-        <button class="smiley-btn" onclick="restartBtn()">😃</button>
-        <h2>Your time: </h2>
-        <h2 class="time">0.0</h2>
+        <div class="smiley-btn" onclick="restartBtn()">😃</div>
+        <h2>Your time: <span class="time">0.0</span></h2>
+        <p>live left: <span>❤️❤️❤️</span></p>
+        <p class="hints">Your Hints: <span class="hint1" onclick="useHint(this)">❔</span><span class="hint2" onclick="useHint(this)">❔</span><span class="hint3" onclick="useHint(this)">❔</span></p>
         <table>
             <tbody class="board">
 
@@ -30,4 +39,6 @@
     <script src="js/utils.js"></script>
     <script src="js/main.js"></script>
 </body>
+<footer>By Maor Aknin</footer>
+
 </html>

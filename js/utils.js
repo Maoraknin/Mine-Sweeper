@@ -46,19 +46,34 @@ function checkNeighbors(cellI, cellJ, mat) {
     }
 }
 
+function hintNeighborsPlace(cellI, cellJ, mat) {
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= mat.length) continue
 
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (i === cellI && j === cellJ) continue
+            if (j < 0 || j >= mat[i].length) continue
+            mat[i][j].isShown = true
+        }
+    }
+    return({i,j})
+    // setTimeout(() => {
+    //     mat[i][j].isShown = false
+    // },1000)
+}
 
 
 function startTimer() {
-    if (gGame.isOn && gGame.shownCount === 0){
+    
         gGame.secsPassed = Date.now()
         gInterval = setInterval(() => {
+            // console.log('Date.now() - gGame.secsPassed:',Date.now() - gGame.secsPassed)
             const seconds = (Date.now() - gGame.secsPassed) / 1000
             // gGame.secsPassed = seconds
             var elH2 = document.querySelector('.time')
             elH2.innerText = seconds.toFixed(1)
         }, 1);
-    }
+    
     
 }
 
@@ -94,6 +109,16 @@ function renderBoard(mat, selector) {
         strHTML += '</tr>'
     }
 
+    
+
+    
     const elContainer = document.querySelector(selector)
     elContainer.innerHTML = strHTML
 }
+
+// function renderCell(i, j, value) {
+//     const elCell = document.querySelector(`.cell-${i}-${j}`)
+//     elCell.innerText = value
+//     return elCell
+
+// }
