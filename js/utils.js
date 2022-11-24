@@ -30,14 +30,16 @@ function checkNeighbors(cellI, cellJ, mat) {
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
             if (i === cellI && j === cellJ) continue
             if (j < 0 || j >= mat[i].length) continue
+            const cell = mat[i][j]
             
-            if (mat[i][j].minesAroundCount !== 0 && mat[i][j].isShown === false) {
-                mat[i][j].isShown = true
+            if (cell.minesAroundCount !== 0 && cell.isShown === false) {
+                cell.isShown = true
                 gGame.shownCount++
             }
-            if (mat[i][j].minesAroundCount === 0 && mat[i][j].isShown === false){
-                mat[i][j].isShown = true
+            if (cell.minesAroundCount === 0 && cell.isShown === false){
+                cell.isShown = true
                 gGame.shownCount++
+                
   
                 checkNeighbors(i, j, mat)
                 
@@ -51,9 +53,22 @@ function hintNeighborsPlace(cellI, cellJ, mat) {
         if (i < 0 || i >= mat.length) continue
 
         for (var j = cellJ - 1; j <= cellJ + 1; j++) {
-            if (i === cellI && j === cellJ) continue
+            // if (i === cellI && j === cellJ) continue
             if (j < 0 || j >= mat[i].length) continue
-            mat[i][j].isShown = true
+            const cell = mat[i][j]
+            if(!cell.isShown && !cell.isHint && !cell.isMarked){
+                cell.isShown = true
+                cell.isHint = true
+                if(cell.isMine) renderCell(i, j, MINE)
+                else renderCell(i, j, cell.minesAroundCount)
+            }else if(cell.isShown && cell.isHint){
+                cell.isShown = false
+                cell.isHint = false
+                if(cell.isMine) renderCell(i, j, '')
+                else renderCell(i, j, '')
+            }
+            
+            
         }
     }
     return({i,j})
@@ -62,14 +77,34 @@ function hintNeighborsPlace(cellI, cellJ, mat) {
     // },1000)
 }
 
+function getEmptyCells() {
+    const emptyCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            const currCell = gBoard[i][j]
+            if (currCell.isMine || currCell.isShown) continue
+            emptyCells.push({ i, j })
+        }
+    }
+return emptyCells
+
+}
+
+function drawRandNum(nums) {
+    var randIdx = getRandomInt(0, nums.length)
+    return nums.splice(randIdx, 1)[0]
+
+}
+
+
 
 function startTimer() {
     
-        gGame.secsPassed = Date.now()
+    gStartTime = Date.now()
         gInterval = setInterval(() => {
             // console.log('Date.now() - gGame.secsPassed:',Date.now() - gGame.secsPassed)
-            const seconds = (Date.now() - gGame.secsPassed) / 1000
-            // gGame.secsPassed = seconds
+            const seconds = (Date.now() - gStartTime) / 1000
+            gGame.secsPassed = seconds
             var elH2 = document.querySelector('.time')
             elH2.innerText = seconds.toFixed(1)
         }, 1);
@@ -79,7 +114,7 @@ function startTimer() {
 
 function resetTime() {
     gGame.secsPassed = 0
-    var elH2 = document.querySelector('.time')
+    const elH2 = document.querySelector('.time')
     elH2.innerText = '0.0'
 }
 
@@ -116,9 +151,9 @@ function renderBoard(mat, selector) {
     elContainer.innerHTML = strHTML
 }
 
-// function renderCell(i, j, value) {
-//     const elCell = document.querySelector(`.cell-${i}-${j}`)
-//     elCell.innerText = value
-//     return elCell
+function renderCell(i, j, value) {
+    const elCell = document.querySelector(`.cell-${i}-${j}`)
+    elCell.innerText = value
+    return elCell
 
-// }
+}

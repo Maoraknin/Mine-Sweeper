@@ -1,17 +1,41 @@
-*{
+* {
     font-size: 16px;
 }
 
-body{
+body {
     text-align: center;
     font-family: 'Anton', sans-serif;
 }
 
-h1{
+/* .context {
+    height: 450px;
+    width: 450px;
+    margin-left: 37%;
+    margin-right: 63%;
+    margin-bottom: 200px;
+
+
+} */
+
+
+
+/* .assists {
+    float: left;
+} */
+
+/* .board-container {
+    float: right;
+
+} */
+
+h1 {
+    margin-top: 20px;
+    margin-bottom: 20px;
     font-size: 60px;
 }
 
-h2, span{
+h2,
+span {
     font-size: 30px;
 }
 
@@ -22,15 +46,11 @@ table {
 
 }
 
-div{
-    margin-left: auto;
-    margin-right: auto;
-}
 
 td {
-    height: 60px;
-    width: 60px;
-    font-size: 30px;
+    height: 70px;
+    width: 70px;
+    font-size: 35px;
     background-color: beige;
     border-radius: 10px;
     /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
@@ -59,13 +79,15 @@ button:hover {
 
 }
 
-.smiley-btn{
+.smiley-btn {
     height: 40px;
     width: 40px;
     font-size: 40px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-footer{
+footer {
     margin-top: 150px;
 }
 
@@ -78,20 +100,22 @@ footer{
 
 
 body {
-	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
-	height: 100vh;
+    background: linear-gradient(-45deg, #4A403A, #3F4E4F, #A27B5C, #DCD7C9);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
 }
 
 @keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
