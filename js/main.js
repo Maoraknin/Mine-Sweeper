@@ -52,8 +52,13 @@ function onInit() {
     lifeUpdate()
     hintUpdate()
     safeUpdate()
+    megaHintsUpdate()
+    sevenBoomUpdate()
+    placeMinesUpdate()
+    exterminatorUpdate()
     
 }
+
 
 function buildBoard() {
     const board = []
@@ -128,11 +133,13 @@ function cellClicked(btn, i, j) {
     cell.isShown = true
     if (cell.isMine) {
         if (gLevel.LIFE > 0) {
+            mineSound()
             gLevel.LIFE--
             lifeUpdate()
             gOpenBombCount++
             btn.innerText = MINE
         } else {
+            lastMineSound()
             elCell.innerText = MINE
             endGame(LOSESMILEY)
         }
@@ -145,6 +152,7 @@ function cellClicked(btn, i, j) {
         elCell.innerText = cell.minesAroundCount
         gGame.shownCount++
         if (isVictory()) {
+            victorySound()
             endGame(WINSMILEY)
         }
     }
@@ -476,6 +484,44 @@ function darkMode(btn){
 
 }
 
+function mineSound(){
+    var audio = new Audio('sound/mine.wav');
+    audio.play();
+}
+
+function lastMineSound(){
+    var audio = new Audio('sound/lastMine.wav');
+    audio.play();
+}
+
+function victorySound(){
+    var audio = new Audio('sound/victory.mp3');
+    audio.play();
+}
+
+function megaHintsUpdate(){
+    const elBtn =  document.querySelector('.mega-hint')
+    elBtn.classList.remove('used-element')
+    elBtn.innerText = 'Mega Hint!'
+ }
+ 
+ function sevenBoomUpdate(){
+     const elBtn =  document.querySelector('.seven-boom')
+     elBtn.classList.remove('used-element')
+     elBtn.innerText = '7 BOOM!'
+  }
+ 
+  function placeMinesUpdate(){
+     const elBtn =  document.querySelector('.manually-create')
+     elBtn.classList.remove('used-element')
+     elBtn.innerText = 'Place Mines'
+  }
+ 
+  function exterminatorUpdate(){
+     const elBtn =  document.querySelector('.exterminator')
+     elBtn.classList.remove('used-element')
+     elBtn.innerText = 'Exterminator'
+  }
 
 
 
