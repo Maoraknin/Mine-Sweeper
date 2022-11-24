@@ -18,10 +18,18 @@
     <button onclick="changeLevel('hard')">Hard</button>
     <br>
     <div class="smiley-btn" onclick="restartBtn()">😃</div>
-    <h2>Your time: <span class="time">0.0</span></h2>
     <h2>High Score: <span class="high-score"></span></h2>
+    <h2>time: <span class="time">0.0</span></h2>
+    
+
     <div class="context">
-       
+        <div class="assists">
+            <p><span>❤️</span></p>
+            <p class="hints"><span class="hint1" onclick="useHint(this)">❔</span><span class="hint2"
+                    onclick="useHint(this)">❔</span><span class="hint3" onclick="useHint(this)">❔</span></p>
+            <p class="safes"><span class="safe1" onclick="useSafe(this)">✅</span><span class="safe2"
+                    onclick="useSafe(this)">✅</span><span class="safe3" onclick="useSafe(this)">✅</span></p>
+        </div>
         <div class="board-container">
             <table>
                 <tbody class="board">
@@ -29,13 +37,13 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <div class="assists">
-        <p><span>❤️</span></p>
-        <p class="hints"><span class="hint1" onclick="useHint(this)">❔</span><span class="hint2"
-                onclick="useHint(this)">❔</span><span class="hint3" onclick="useHint(this)">❔</span></p>
-        <p class="safes"><span class="safe1" onclick="useSafe(this)">✅</span><span class="safe2"
-                onclick="useSafe(this)">✅</span><span class="safe3" onclick="useSafe(this)">✅</span></p>
+        <div class="times">
+            <button class="mega-hint" onclick="megaHint()">Mega Hint!</button>
+            <br>
+            <button class="seven-boom" onclick="sevenBoom()">7 BOOM!</button>
+            <br>
+            <button class="manually-create" onclick="switchManualMining()">Place Mines</button>
+        </div>
     </div>
 
 

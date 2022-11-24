@@ -32,11 +32,11 @@ function checkNeighbors(cellI, cellJ, mat) {
             if (j < 0 || j >= mat[i].length) continue
             const cell = mat[i][j]
             
-            if (cell.minesAroundCount !== 0 && cell.isShown === false) {
+            if (cell.minesAroundCount !== 0 && !cell.isShown) {
                 cell.isShown = true
                 gGame.shownCount++
             }
-            if (cell.minesAroundCount === 0 && cell.isShown === false){
+            if (cell.minesAroundCount === 0 && !cell.isShown){
                 cell.isShown = true
                 gGame.shownCount++
                 
@@ -47,6 +47,26 @@ function checkNeighbors(cellI, cellJ, mat) {
         }
     }
 }
+
+function createMegaHint(startIdx, endIdx) {
+    for (var i = startIdx.i; i <= endIdx.i; i++) {
+        for (var j = startIdx.j; j <= endIdx.j; j++) {
+            var cell = gBoard[i][j]
+            if(!cell.isShown && !cell.isMegaHint && !cell.isMarked){
+                cell.isShown = true
+                cell.isMegaHint = true
+                if(cell.isMine) renderCell(i, j, MINE)
+                else renderCell(i, j, cell.minesAroundCount)
+            }else if(cell.isShown && cell.isMegaHint){
+                cell.isShown = false
+                cell.isMegaHint = false
+                if(cell.isMine) renderCell(i, j, '')
+                else renderCell(i, j, '')
+            }
+        }
+    }
+}
+
 
 function hintNeighborsPlace(cellI, cellJ, mat) {
     for (var i = cellI - 1; i <= cellI + 1; i++) {
@@ -106,7 +126,7 @@ function startTimer() {
             const seconds = (Date.now() - gStartTime) / 1000
             gGame.secsPassed = seconds
             var elH2 = document.querySelector('.time')
-            elH2.innerText = seconds.toFixed(1)
+            elH2.innerText = seconds.toFixed(3)
         }, 1);
     
     
