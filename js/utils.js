@@ -110,6 +110,19 @@ return emptyCells
 
 }
 
+function getHiddenMinedCells() {
+    const minedCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            const currCell = gBoard[i][j]
+            if(currCell.isShown) continue
+            if(currCell.isMarked) continue
+            if (currCell.isMine) minedCells.push({i,j})
+        }
+    }
+return minedCells
+}
+
 function drawRandNum(nums) {
     var randIdx = getRandomInt(0, nums.length)
     return nums.splice(randIdx, 1)[0]
@@ -150,15 +163,28 @@ function renderBoard(mat, selector) {
             const className = `cell cell-${i}-${j}`
             const minesCount = setMinesNegsCount(i, j, mat)
             cell.minesAroundCount = minesCount
-            if (cell.isShown && cell.isMine) {
-                strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MINE}</td>`
-            } else if (cell.isShown && !cell.isMine) {
-                strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${cell.minesAroundCount}</td>`
-            } else if (cell.isMarked) {
-                strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MARK}</td>`
-            } else {
-                strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu="cellLeftClicked(this,${i}, ${j}); return false"></td>`
+            if(gIsDarkMode){
+                if (cell.isShown && cell.isMine) {
+                    strHTML += `<td class="${className} td-dark-mode" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MINE}</td>`
+                } else if (cell.isShown && !cell.isMine) {
+                    strHTML += `<td class="${className} td-dark-mode" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${cell.minesAroundCount}</td>`
+                } else if (cell.isMarked) {
+                    strHTML += `<td class="${className} td-dark-mode" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MARK}</td>`
+                } else {
+                    strHTML += `<td class="${className} td-dark-mode" onclick="cellClicked(this,${i}, ${j})" oncontextmenu="cellLeftClicked(this,${i}, ${j}); return false"></td>`
+                }
+            }else{
+                if (cell.isShown && cell.isMine) {
+                    strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MINE}</td>`
+                } else if (cell.isShown && !cell.isMine) {
+                    strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${cell.minesAroundCount}</td>`
+                } else if (cell.isMarked) {
+                    strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu=" return false">${MARK}</td>`
+                } else {
+                    strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu="cellLeftClicked(this,${i}, ${j}); return false"></td>`
+                }
             }
+            
 
         }
         strHTML += '</tr>'
@@ -176,4 +202,14 @@ function renderCell(i, j, value) {
     elCell.innerText = value
     return elCell
 
+}
+
+function getIdxs() {
+    const cellsIdx = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard.length; j++) {
+            cellsIdx.push({i,j})
+        }
+    }
+    return cellsIdx
 }

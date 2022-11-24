@@ -12,7 +12,7 @@
 
 <body onload="onInit()">
     <h1>Mine Sweeper!</h1>
-
+    
     <button onclick="changeLevel('easy')">Easy</button>
     <button onclick="changeLevel('medium')">Medium</button>
     <button onclick="changeLevel('hard')">Hard</button>
@@ -21,31 +21,38 @@
     <h2>High Score: <span class="high-score"></span></h2>
     <h2>time: <span class="time">0.0</span></h2>
     
-
+    
     <div class="context">
         <div class="assists">
             <p><span>❤️</span></p>
-            <p class="hints"><span class="hint1" onclick="useHint(this)">❔</span><span class="hint2"
-                    onclick="useHint(this)">❔</span><span class="hint3" onclick="useHint(this)">❔</span></p>
             <p class="safes"><span class="safe1" onclick="useSafe(this)">✅</span><span class="safe2"
-                    onclick="useSafe(this)">✅</span><span class="safe3" onclick="useSafe(this)">✅</span></p>
-        </div>
-        <div class="board-container">
-            <table>
-                <tbody class="board">
-
-                </tbody>
+                onclick="useSafe(this)">✅</span><span class="safe3" onclick="useSafe(this)">✅</span></p>
+                <p class="hints"><span class="hint1" onclick="useHint(this)">❔</span><span class="hint2"
+                    onclick="useHint(this)">❔</span><span class="hint3" onclick="useHint(this)">❔</span></p>
+                    
+                    
+                </div>
+                <div class="board-container">
+                    <table>
+                        <tbody class="board">
+                            
+                        </tbody>
             </table>
         </div>
         <div class="times">
-            <button class="mega-hint" onclick="megaHint()">Mega Hint!</button>
+            <button class="mega-hint" onclick="megaHint(this)">Mega Hint!</button>
             <br>
-            <button class="seven-boom" onclick="sevenBoom()">7 BOOM!</button>
+            <button class="seven-boom" onclick="sevenBoom(this)">7 BOOM!</button>
             <br>
-            <button class="manually-create" onclick="switchManualMining()">Place Mines</button>
+            <button class="undo" onclick="unDo()">UNDO - in the procces</button>
+            <br>
+            <button class="manually-create" onclick="switchManualMining(this)">Place Mines</button>
+            <br>
+            <button class="exterminator" onclick="exterminator(this)">Exterminator</button>
         </div>
     </div>
-
+    
+    <button class="dark-mode-btn" onclick="darkMode(this)">Dark Mode</button>
 
 
     <script src="js/utils.js"></script>
