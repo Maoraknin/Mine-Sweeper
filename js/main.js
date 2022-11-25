@@ -27,6 +27,7 @@ var gMegaHintEndCells
 var gMinesCount
 var gIsSevenBoom
 var gHighScore = Infinity
+var gMoves
 
 
 
@@ -34,6 +35,7 @@ var gHighScore = Infinity
 function onInit() {
     const elHighScore = document.querySelector('.high-score')
     elHighScore.innerText = localStorage.BestScore
+    gMoves = []
     gIsHint = false
     gIsMegaHint = false
     gIsSevenBoom = false
@@ -48,6 +50,7 @@ function onInit() {
         secsPassed: 0
     }
     gBoard = buildBoard()
+    saveCurrGBoard()
     renderBoard(gBoard, 'tbody')
     lifeUpdate()
     hintUpdate()
@@ -56,7 +59,7 @@ function onInit() {
     sevenBoomUpdate()
     placeMinesUpdate()
     exterminatorUpdate()
-    
+
 }
 
 
@@ -117,6 +120,7 @@ function cellClicked(btn, i, j) {
                 // console.log('elBtn:',elBtn)
                 elBtn.innerText = 'Used Element'
                 elBtn.classList.add('used-element')
+                saveCurrGBoard()
             }
             return
         }
@@ -128,6 +132,7 @@ function cellClicked(btn, i, j) {
             hintNeighborsPlace(i, j, gBoard)
         }, 1000)
         gIsHint = false
+        saveCurrGBoard()
         return
     }
     cell.isShown = true
@@ -138,6 +143,7 @@ function cellClicked(btn, i, j) {
             lifeUpdate()
             gOpenBombCount++
             btn.innerText = MINE
+            saveCurrGBoard()
         } else {
             lastMineSound()
             elCell.innerText = MINE
@@ -147,10 +153,12 @@ function cellClicked(btn, i, j) {
     } else {
         if (cell.minesAroundCount === 0) {
             checkNeighbors(i, j, gBoard)
+            saveCurrGBoard()
             renderBoard(gBoard, 'tbody')
         }
         elCell.innerText = cell.minesAroundCount
         gGame.shownCount++
+        saveCurrGBoard()
         if (isVictory()) {
             victorySound()
             endGame(WINSMILEY)
@@ -171,6 +179,7 @@ function cellLeftClicked(btn, i, j) {
         cell.isMarked = true
         gGame.markedCount++
         elCell.innerText = MARK
+        saveCurrGBoard()
         if (isVictory()) {
             endGame(WINSMILEY)
         }
@@ -178,6 +187,7 @@ function cellLeftClicked(btn, i, j) {
         cell.isMarked = false
         gGame.markedCount--
         elCell.innerText = ''
+        saveCurrGBoard()
     }
 }
 
@@ -195,6 +205,8 @@ function startGame() {
         renderBoard(gBoard, 'tbody')
         startTimer()
     }
+    saveCurrGBoard()
+    console.log('gMoves:',gMoves)
 }
 
 function sevenBoom(btn) {
@@ -229,6 +241,7 @@ function manuallyEnterMines(i, j) {
                 const elBtn = document.querySelector('.manually-create')
                 elBtn.innerText = 'Used Element'
                 elBtn.classList.add('used-element')
+                saveCurrGBoard()
             }
             return true
         } else {
@@ -243,6 +256,7 @@ function switchManualMining(btn) {
     if (gGame.shownCount !== 0) return
     if (gGame.markedCount !== 0) return
     gIsManuallyMined = true
+    saveCurrGBoard()
 
 }
 
@@ -331,7 +345,7 @@ function changeLevel(level) {
         gLevel.EXTERMINATOR = 1
     }
     lifeUpdate()
-    
+
     resetTime()
     gBoard = buildBoard()
     renderBoard(gBoard, 'tbody')
@@ -383,9 +397,26 @@ function lifeUpdate() {
     }
 }
 
-// function unDo() {
+function saveCurrGBoard(){
+    const currGBoard = copyMat(gBoard)
+    gMoves.push(currGBoard)
+    console.log('gMoves:',gMoves)
+}
 
-// }
+// understand that need to save last move on a diff mat in an array,
+// and when undo to take last function from that array as gBoard and render.
+
+
+function unDo() {
+    gBoard = gMoves.pop()
+    if(gMoves.length === 0){
+        restartBtn()
+        return
+    }
+    renderBoard(gBoard, 'tbody')
+
+
+}
 
 
 function isVictory() {
@@ -417,6 +448,7 @@ function endGame(sign) {
     }
     renderBoard(gBoard, 'tbody')
     clearInterval(gInterval)
+    saveCurrGBoard()
 
 }
 
@@ -426,21 +458,21 @@ function restartBtn() {
     onInit()
 }
 
-function darkMode(btn){
+function darkMode(btn) {
     console.log('here');
     gIsDarkMode ? gIsDarkMode = false : gIsDarkMode = true
-    if(gIsDarkMode){
+    if (gIsDarkMode) {
         console.log('here');
         btn.classList.add('light-mode-btn')
         const elBody = document.querySelector('body')
         elBody.classList.add('body-dark-mode')
         const elTd = document.querySelectorAll('td')
-        console.log('elTd:',elTd)
-        for(var i = 0; i < elTd.length; i++){
+        console.log('elTd:', elTd)
+        for (var i = 0; i < elTd.length; i++) {
             elTd[i].classList.add('td-dark-mode')
         }
         const elBtn = document.querySelectorAll('button')
-        for(var i = 0; i < elBtn.length; i++){
+        for (var i = 0; i < elBtn.length; i++) {
             elBtn[i].classList.add('btn-dark-mode')
         }
         const elSevenBoom = document.querySelector('.seven-boom')
@@ -453,19 +485,19 @@ function darkMode(btn){
         elMegaHint.classList.add('mega-hint-dark-mode')
         const elManualCreate = document.querySelector('.manually-create')
         elManualCreate.classList.add('manually-create-dark-mode')
-        
-    }else{
+
+    } else {
         console.log('here');
         btn.classList.remove('light-mode-btn')
         const elBody = document.querySelector('body')
         elBody.classList.remove('body-dark-mode')
         const elTd = document.querySelectorAll('td')
-        console.log('elTd:',elTd)
-        for(var i = 0; i < elTd.length; i++){
+        console.log('elTd:', elTd)
+        for (var i = 0; i < elTd.length; i++) {
             elTd[i].classList.remove('td-dark-mode')
         }
         const elBtn = document.querySelectorAll('button')
-        for(var i = 0; i < elBtn.length; i++){
+        for (var i = 0; i < elBtn.length; i++) {
             elBtn[i].classList.remove('btn-dark-mode')
         }
         const elSevenBoom = document.querySelector('.seven-boom')
@@ -478,50 +510,50 @@ function darkMode(btn){
         elMegaHint.classList.remove('mega-hint-dark-mode')
         const elManualCreate = document.querySelector('.manually-create')
         elManualCreate.classList.remove('manually-create-dark-mode')
-        
+
     }
-   
+
 
 }
 
-function mineSound(){
+function mineSound() {
     var audio = new Audio('sound/mine.wav');
     audio.play();
 }
 
-function lastMineSound(){
+function lastMineSound() {
     var audio = new Audio('sound/lastMine.wav');
     audio.play();
 }
 
-function victorySound(){
+function victorySound() {
     var audio = new Audio('sound/victory.mp3');
     audio.play();
 }
 
-function megaHintsUpdate(){
-    const elBtn =  document.querySelector('.mega-hint')
+function megaHintsUpdate() {
+    const elBtn = document.querySelector('.mega-hint')
     elBtn.classList.remove('used-element')
     elBtn.innerText = 'Mega Hint!'
- }
- 
- function sevenBoomUpdate(){
-     const elBtn =  document.querySelector('.seven-boom')
-     elBtn.classList.remove('used-element')
-     elBtn.innerText = '7 BOOM!'
-  }
- 
-  function placeMinesUpdate(){
-     const elBtn =  document.querySelector('.manually-create')
-     elBtn.classList.remove('used-element')
-     elBtn.innerText = 'Place Mines'
-  }
- 
-  function exterminatorUpdate(){
-     const elBtn =  document.querySelector('.exterminator')
-     elBtn.classList.remove('used-element')
-     elBtn.innerText = 'Exterminator'
-  }
+}
+
+function sevenBoomUpdate() {
+    const elBtn = document.querySelector('.seven-boom')
+    elBtn.classList.remove('used-element')
+    elBtn.innerText = '7 BOOM!'
+}
+
+function placeMinesUpdate() {
+    const elBtn = document.querySelector('.manually-create')
+    elBtn.classList.remove('used-element')
+    elBtn.innerText = 'Place Mines'
+}
+
+function exterminatorUpdate() {
+    const elBtn = document.querySelector('.exterminator')
+    elBtn.classList.remove('used-element')
+    elBtn.innerText = 'Exterminator'
+}
 
 
 

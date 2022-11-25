@@ -48,6 +48,20 @@ function checkNeighbors(cellI, cellJ, mat) {
     }
 }
 
+
+
+
+function copyMat(mat) {
+    var newMat = []
+    for (var i = 0; i < mat.length; i++) {
+        newMat[i] = []
+        for (var j = 0; j < mat[0].length; j++) {
+            newMat[i][j] = structuredClone(mat[i][j])
+        }
+    }
+    return newMat
+}
+
 function createMegaHint(startIdx, endIdx) {
     for (var i = startIdx.i; i <= endIdx.i; i++) {
         for (var j = startIdx.j; j <= endIdx.j; j++) {
@@ -184,7 +198,6 @@ function renderBoard(mat, selector) {
                     strHTML += `<td class="${className}" onclick="cellClicked(this,${i}, ${j})" oncontextmenu="cellLeftClicked(this,${i}, ${j}); return false"></td>`
                 }
             }
-            
 
         }
         strHTML += '</tr>'
